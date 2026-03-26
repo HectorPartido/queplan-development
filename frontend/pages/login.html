@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo-completo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-gradient-to-br from-queplan-cream via-white to-orange-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md animate-fade-in-up">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-block">
+                <img src="/assets/images/logo-completo.png" alt="¿Qué Plan?" class="h-20 mx-auto mb-4 hover:scale-105 transition-transform">
+            </a>
+            <h1 class="font-display text-3xl font-bold text-gray-900">Bienvenido</h1>
+            <p class="text-gray-500 mt-1">Inicia sesión para explorar Cancún</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 p-8">
+            <form id="loginForm" class="space-y-5">
+                <!-- Email -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Correo electrónico</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" class="input-field pl-11" id="email" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Contraseña</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" class="input-field pl-11 pr-11" id="password" placeholder="Tu contraseña" required minlength="6" autocomplete="current-password">
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Forgot password -->
+                <div class="text-right -mt-1">
+                    <a href="/pages/recuperar.html" class="text-xs text-gray-400 hover:text-queplan-orange transition-colors">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="w-full btn-primary py-3 text-base flex items-center justify-center gap-2" id="btnLogin">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">
+                    ¿No tienes cuenta?
+                    <a href="/pages/registro.html" class="font-semibold text-queplan-orange hover:text-queplan-orange-dark transition-colors">Regístrate</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Back to map -->
+        <div class="text-center mt-6">
+            <a href="/" class="text-sm text-gray-400 hover:text-queplan-orange transition-colors">
+                <i class="fas fa-arrow-left mr-1"></i> Volver al mapa
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/login.js"></script>
+</body>
+</html>

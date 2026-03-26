@@ -1,0 +1,64 @@
+# ============================================================
+# QUEPLAN - Archivos ignorados por Git
+# ============================================================
+
+# ------------------------------------------------------------
+# Dependencias
+# ------------------------------------------------------------
+# node_modules es la carpeta donde npm instala las librerías
+# Es muy pesada y se puede regenerar con "npm install"
+node_modules/
+
+# ------------------------------------------------------------
+# Variables de entorno
+# ------------------------------------------------------------
+# NUNCA subir archivos .env porque contienen contraseñas
+.env
+.env.local
+.env.production
+
+# ------------------------------------------------------------
+# Logs y archivos temporales
+# ------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+
+# ------------------------------------------------------------
+# Sistema operativo
+# ------------------------------------------------------------
+# Archivos que crea macOS
+.DS_Store
+
+# Archivos que crea Windows
+Thumbs.db
+desktop.ini
+
+# ------------------------------------------------------------
+# Editores de código
+# ------------------------------------------------------------
+# Visual Studio Code
+.vscode/
+
+# IntelliJ / WebStorm
+.idea/
+
+# ------------------------------------------------------------
+# Archivos de compilación/build
+# ------------------------------------------------------------
+dist/
+build/
+
+# ------------------------------------------------------------
+# Otros
+# ------------------------------------------------------------
+# Archivos de coverage de tests
+coverage/
+
+# Archivos subidos por usuarios (si los guardamos localmente)
+uploads/
+
+# ------------------------------------------------------------
+# Claude Code
+# ------------------------------------------------------------
+.claude/

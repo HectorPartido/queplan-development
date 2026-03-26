@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar -->
+    <!-- Navbar (generado por navbar.js) -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <!-- Content -->
+    <main class="pt-16">
+        <!-- Loading -->
+        <div id="loading" class="flex items-center justify-center py-20">
+            <div class="w-12 h-12 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Detail Content -->
+        <div id="detailContent" class="hidden page-content">
+            <!-- Hero Image -->
+            <div class="relative h-64 md:h-80 bg-gray-200 overflow-hidden" id="heroSection">
+                <img id="heroImage" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                    <h1 id="ubicacionNombre" class="font-display text-3xl md:text-4xl font-bold text-white mb-2"></h1>
+                    <div id="moodBadges" class="flex flex-wrap gap-2"></div>
+                </div>
+                <!-- Fav button -->
+                <button id="btnFavorito" class="absolute top-4 right-4 w-12 h-12 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-gray-400 text-xl hover:text-red-500 hover:scale-110 transition-all shadow-lg" style="display:none" data-auth="logueado">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="max-w-5xl mx-auto px-4 md:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Main Info -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Description -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <h2 class="font-display text-xl font-semibold text-gray-900 mb-3">Descripción</h2>
+                            <p id="ubicacionDescripcion" class="text-gray-600 leading-relaxed"></p>
+                        </div>
+
+                        <!-- Activities -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm hidden" id="actividadesSection">
+                            <h2 class="font-display text-xl font-semibold text-gray-900 mb-4">Actividades</h2>
+                            <div id="actividadesList" class="space-y-3"></div>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm">
+                            <h2 class="font-display text-xl font-semibold text-gray-900 mb-4">Calificación</h2>
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="text-4xl font-bold text-gray-900" id="ratingNumber">0</div>
+                                <div>
+                                    <div id="ratingStars" class="text-lg"></div>
+                                    <p class="text-sm text-gray-500 mt-0.5"><span id="totalCalificaciones">0</span>calificaciones</p>
+                                </div>
+                            </div>
+                            <!-- Interactive rating -->
+                            <div id="calificarSection" class="border-t border-gray-100 pt-4 mt-4" data-auth="logueado" style="display:none">
+                                <p class="text-sm font-medium text-gray-700 mb-2">Tu calificación:</p>
+                                <div id="interactiveStars" class="star-rating flex gap-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Mini Map -->
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+                            <div id="miniMap" class="h-64 w-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="space-y-4">
+                        <!-- Price -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm text-center">
+                            <p class="text-sm text-gray-500 mb-1">Precio promedio por persona</p>
+                            <p id="precio" class="text-3xl font-bold text-gradient"></p>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+                            <div id="infoHorario" class="flex items-start gap-3" style="display:none">
+                                <i class="fas fa-clock text-queplan-orange mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Horario</p>
+                                    <p id="horario" class="text-sm text-gray-700"></p>
+                                </div>
+                            </div>
+                            <div id="infoTelefono" class="flex items-start gap-3" style="display:none">
+                                <i class="fas fa-phone text-queplan-orange mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Teléfono</p>
+                                    <p id="telefono" class="text-sm text-gray-700"></p>
+                                </div>
+                            </div>
+                            <div id="infoDireccion" class="flex items-start gap-3" style="display:none">
+                                <i class="fas fa-map-marker-alt text-queplan-orange mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Dirección</p>
+                                    <p id="direccion" class="text-sm text-gray-700"></p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-user text-queplan-orange mt-0.5"></i>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-semibold">Publicado por</p>
+                                    <p id="vendedor" class="text-sm text-gray-700"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reportar -->
+                        <button id="btnReportarUbicacion" data-auth="logueado" style="display:none" class="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-red-200 text-red-500 text-sm font-semibold rounded-2xl hover:bg-red-50 transition-all cursor-pointer">
+                            <i class="fas fa-flag"></i> Reportar esta ubicación
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/components/reportar-modal.js"></script>
+    <script src="/assets/js/pages/ubicacion.js"></script>
+</body>
+</html>

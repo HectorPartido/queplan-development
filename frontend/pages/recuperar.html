@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo-completo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-gradient-to-br from-queplan-cream via-white to-orange-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md animate-fade-in-up">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-block">
+                <img src="/assets/images/logo-completo.png" alt="¿Qué Plan?" class="h-20 mx-auto mb-4 hover:scale-105 transition-transform">
+            </a>
+            <h1 class="font-display text-3xl font-bold text-gray-900">Recuperar contraseña</h1>
+            <p class="text-gray-500 mt-1" id="subtitulo">Ingresa tu correo para recibir un código</p>
+        </div>
+
+        <!-- Step 1: Email -->
+        <div id="paso1" class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 p-8">
+            <form id="formEmail" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Correo electrónico</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" class="input-field pl-11" id="emailRecuperar" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                </div>
+                <button type="submit" class="w-full btn-primary py-3 text-base flex items-center justify-center gap-2" id="btnEnviarCodigo">
+                    <i class="fas fa-paper-plane"></i> Enviar código
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Code -->
+        <div id="paso2" class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 p-8 hidden">
+            <form id="formCodigo" class="space-y-5">
+                <div class="text-center mb-2">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-envelope-open-text text-queplan-orange text-2xl"></i>
+                    </div>
+                    <p class="text-sm text-gray-500">Envíamos un código de 6 dígitos a</p>
+                    <p class="text-sm font-semibold text-gray-900" id="emailMostrado"></p>
+                </div>
+
+                <!-- OTP inputs -->
+                <div class="flex justify-center gap-2" id="otpContainer">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center text-xl font-bold border-2 border-gray-200 rounded-xl focus:outline-none focus:border-queplan-orange transition-colors otp-input" inputmode="numeric">
+                </div>
+
+                <!-- Timer -->
+                <div class="text-center">
+                    <p class="text-xs text-gray-400" id="timerText">El código expira en <span id="timer" class="font-semibold text-queplan-orange">15:00</span></p>
+                </div>
+
+                <button type="submit" class="w-full btn-primary py-3 text-base flex items-center justify-center gap-2" id="btnVerificarCodigo">
+                    <i class="fas fa-check-circle"></i> Verificar código
+                </button>
+
+                <div class="text-center">
+                    <button type="button" id="btnReenviar" class="text-xs text-gray-400 hover:text-queplan-orange transition-colors cursor-pointer">
+                        <i class="fas fa-redo mr-1"></i> Reenviar código
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 3: New password -->
+        <div id="paso3" class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 p-8 hidden">
+            <form id="formNuevaPassword" class="space-y-5">
+                <div class="text-center mb-2">
+                    <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-lock-open text-emerald-500 text-2xl"></i>
+                    </div>
+                    <p class="text-sm text-gray-500">Ingresa tu nueva contraseña</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nueva contraseña</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" class="input-field pl-11 pr-11" id="nuevaPassword" placeholder="Minimo 6 caracteres" required minlength="6">
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors toggle-password" data-target="nuevaPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar contraseña</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" class="input-field pl-11 pr-11" id="confirmarPassword" placeholder="Repite tu contraseña" required minlength="6">
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors toggle-password" data-target="confirmarPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full btn-primary py-3 text-base flex items-center justify-center gap-2" id="btnCambiarPassword">
+                    <i class="fas fa-save"></i> Cambiar contraseña
+                </button>
+            </form>
+        </div>
+
+        <!-- Back to login -->
+        <div class="text-center mt-6">
+            <a href="/pages/login.html" class="text-sm text-gray-400 hover:text-queplan-orange transition-colors">
+                <i class="fas fa-arrow-left mr-1"></i> Volver a iniciar sesión
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/recuperar.js"></script>
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Lugares | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar (generado por navbar.js) -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <main class="pt-24 pb-12 px-4 md:px-8 max-w-6xl mx-auto page-content">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h1 class="font-display text-3xl font-bold text-gray-900 mb-1">
+                    <i class="fas fa-store text-queplan-orange mr-2"></i>Mis Lugares
+                </h1>
+                <p class="text-gray-500">Administra tus ubicaciones en QuePlan</p>
+            </div>
+            <button id="btnNueva" class="btn-primary inline-flex items-center gap-2 text-sm self-start">
+                <i class="fas fa-plus"></i> Nueva Ubicación
+            </button>
+        </div>
+
+        <!-- Creation/Edit Form -->
+        <div id="formSection" class="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8 hidden animate-fade-in-up">
+            <h2 id="formTitle" class="font-display text-xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-map-marker-alt text-queplan-orange mr-2"></i>Nueva Ubicación
+            </h2>
+
+            <form id="ubicacionForm" class="space-y-5">
+                <!-- Row 1: Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del lugar *</label>
+                    <input type="text" id="inputNombre" class="input-field w-full" placeholder="Ej: Playa Delfines" required>
+                </div>
+
+                <!-- Row 2: Descripcion -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea id="inputDescripcion" class="input-field w-full" rows="3" placeholder="Describe tu lugar..."></textarea>
+                </div>
+
+                <!-- Row 3: Direccion + Precio -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                        <input type="text" id="inputDireccion" class="input-field w-full" placeholder="Calle, número, colonia...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Precio promedio por persona (MXN) *</label>
+                        <input type="number" id="inputPrecio" class="input-field w-full" min="0" step="50" placeholder="0" required>
+                    </div>
+                </div>
+
+                <!-- Row 4: Telefono + Horario -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                        <input type="tel" id="inputTelefono" class="input-field w-full" placeholder="998 123 4567">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Horario</label>
+                        <input type="text" id="inputHorario" class="input-field w-full" placeholder="Lun-Vie 9:00-18:00">
+                    </div>
+                </div>
+
+                <!-- Row 5: Imagen -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Imagen</label>
+                    <input type="hidden" id="inputImagen" value="">
+                    <!-- Preview -->
+                    <div id="imgPreview" class="hidden mb-3 relative inline-block">
+                        <img id="imgPreviewSrc" src="" alt="Preview" class="h-36 rounded-xl object-cover border-2 border-gray-200">
+                        <button type="button" onclick="quitarImagen('ubicacion')" class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors cursor-pointer shadow">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Upload area -->
+                    <div id="imgUploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-queplan-orange/50 hover:bg-orange-50/30 transition-all cursor-pointer" onclick="document.getElementById('inputImagenFile').click()">
+                        <input type="file" id="inputImagenFile" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" onchange="manejarArchivoImagen(this, 'ubicacion')">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
+                        <p class="text-sm text-gray-500">Haz clic o arrastra una imagen aquí</p>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP o GIF (máx. 5MB)</p>
+                    </div>
+                    <!-- URL fallback -->
+                    <details class="mt-2">
+                        <summary class="text-xs text-gray-400 cursor-pointer hover:text-queplan-orange">O pegar URL de imagen</summary>
+                        <input type="url" id="inputImagenUrl" class="input-field w-full mt-2 text-sm" placeholder="https://ejemplo.com/imagen.jpg" onchange="usarUrlImagen(this.value, 'ubicacion')">
+                    </details>
+                </div>
+
+                <!-- Moods -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Moods / Categorías</label>
+                    <div id="moodSelector" class="flex flex-wrap gap-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Map Picker -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Ubicación en el mapa * <span class="text-gray-400 font-normal">(haz clic para colocar el pin)</span></label>
+                    <div id="mapPicker" class="h-72 rounded-xl overflow-hidden border-2 border-gray-200"></div>
+                    <input type="hidden" id="inputLatitud">
+                    <input type="hidden" id="inputLongitud">
+                    <p id="coordsText" class="text-xs text-gray-400 mt-1 hidden">
+                        <i class="fas fa-crosshairs mr-1"></i>Coordenadas: <span id="coordsValue"></span>
+                    </p>
+                    <details class="mt-2">
+                        <summary class="text-xs text-gray-400 cursor-pointer hover:text-queplan-orange">O ingresar coordenadas manualmente</summary>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <input type="number" id="inputLatitudManual" step="any" class="input-field w-full text-sm" placeholder="Latitud (ej: 21.1619)">
+                            <input type="number" id="inputLongitudManual" step="any" class="input-field w-full text-sm" placeholder="Longitud (ej: -86.8515)">
+                        </div>
+                        <button type="button" id="btnAplicarCoords" class="mt-2 px-3 py-1.5 text-xs font-semibold bg-queplan-orange/10 text-queplan-orange rounded-lg hover:bg-queplan-orange/20 transition-all cursor-pointer">
+                            <i class="fas fa-map-marker-alt mr-1"></i>Aplicar coordenadas
+                        </button>
+                    </details>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="btnSubmit" class="btn-primary flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> <span id="btnSubmitText">Enviar Solicitud</span>
+                    </button>
+                    <button type="button" id="btnCancelForm" class="btn-secondary flex items-center gap-2">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Loading -->
+        <div id="ubicacionesLoading" class="flex justify-center py-12">
+            <div class="w-10 h-10 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Grid -->
+        <div id="misUbicacionesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- Empty -->
+        <div id="ubicacionesEmpty" class="empty-state hidden">
+            <i class="fas fa-store"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mb-1">Sin ubicaciones</h3>
+            <p class="text-gray-500 text-sm mb-4">Aún no has registrado ningún lugar</p>
+            <button id="btnEmptyAdd" class="btn-primary inline-flex items-center gap-2 text-sm">
+                <i class="fas fa-plus"></i> Agregar mi primer lugar
+            </button>
+        </div>
+
+        <!-- ============ SEPARADOR ============ -->
+        <div class="border-t border-gray-200 my-10"></div>
+
+        <!-- ============ SECCION: MIS EVENTOS ============ -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h2 class="font-display text-2xl font-bold text-gray-900 mb-1">
+                    <i class="fas fa-calendar-alt text-queplan-orange mr-2"></i>Mis Eventos
+                </h2>
+                <p class="text-gray-500 text-sm">Crea y gestiona tus eventos</p>
+            </div>
+            <button id="btnNuevoEvento" class="btn-primary inline-flex items-center gap-2 text-sm self-start">
+                <i class="fas fa-plus"></i> Nuevo Evento
+            </button>
+        </div>
+
+        <!-- Event Creation/Edit Form -->
+        <div id="eventoFormSection" class="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8 hidden animate-fade-in-up">
+            <h2 id="eventoFormTitle" class="font-display text-xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-calendar-alt text-queplan-orange mr-2"></i>Nuevo Evento
+            </h2>
+
+            <form id="eventoForm" class="space-y-5">
+                <!-- Tipo selector -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de evento *</label>
+                    <div class="grid grid-cols-2 gap-3" id="tipoEventoSelector">
+                        <label class="group-option cursor-pointer flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-blue-200 bg-blue-50 text-center transition-all active" id="optGeneral">
+                            <input type="radio" name="tipoEvento" value="general" checked class="hidden">
+                            <i class="fas fa-calendar text-2xl text-blue-500"></i>
+                            <span class="text-sm font-semibold text-blue-700">Evento de mi ubicación</span>
+                            <span class="text-xs text-blue-500">Vinculado a uno de tus lugares</span>
+                        </label>
+                        <label class="group-option cursor-pointer flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-gray-200 bg-gray-50 text-center transition-all" id="optODS">
+                            <input type="radio" name="tipoEvento" value="ods" class="hidden">
+                            <i class="fas fa-leaf text-2xl text-green-500"></i>
+                            <span class="text-sm font-semibold text-gray-700">Llamado a la ayuda</span>
+                            <span class="text-xs text-gray-500">Evento ODS / ambiental</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Ubicacion dropdown (solo para general) -->
+                <div id="ubicacionEventoWrapper">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicacion del evento *</label>
+                    <select id="selectUbicacion" class="input-field w-full">
+                        <option value="">Selecciona una de tus ubicaciones</option>
+                    </select>
+                    <p class="text-xs text-gray-400 mt-1">Solo se muestran ubicaciones aprobadas</p>
+                </div>
+
+                <!-- Titulo -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Título del evento *</label>
+                    <input type="text" id="inputEventoTitulo" class="input-field w-full" placeholder="Ej: Limpieza de playa" required>
+                </div>
+
+                <!-- Descripcion -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea id="inputEventoDescripcion" class="input-field w-full" rows="3" placeholder="Describe tu evento..."></textarea>
+                </div>
+
+                <!-- Fecha + Hora -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha *</label>
+                        <input type="date" id="inputEventoFecha" class="input-field w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Hora *</label>
+                        <input type="time" id="inputEventoHora" class="input-field w-full" required>
+                    </div>
+                </div>
+
+                <!-- Imagen -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Imagen</label>
+                    <input type="hidden" id="inputEventoImagen" value="">
+                    <!-- Preview -->
+                    <div id="eventoImgPreview" class="hidden mb-3 relative inline-block">
+                        <img id="eventoImgPreviewSrc" src="" alt="Preview" class="h-36 rounded-xl object-cover border-2 border-gray-200">
+                        <button type="button" onclick="quitarImagen('evento')" class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition-colors cursor-pointer shadow">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Upload area -->
+                    <div id="eventoImgUploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-queplan-orange/50 hover:bg-orange-50/30 transition-all cursor-pointer" onclick="document.getElementById('inputEventoImagenFile').click()">
+                        <input type="file" id="inputEventoImagenFile" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" onchange="manejarArchivoImagen(this, 'evento')">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-300 mb-2"></i>
+                        <p class="text-sm text-gray-500">Haz clic o arrastra una imagen aquí</p>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG, WebP o GIF (máx. 5MB)</p>
+                    </div>
+                    <!-- URL fallback -->
+                    <details class="mt-2">
+                        <summary class="text-xs text-gray-400 cursor-pointer hover:text-queplan-orange">O pegar URL de imagen</summary>
+                        <input type="url" id="inputEventoImagenUrl" class="input-field w-full mt-2 text-sm" placeholder="https://ejemplo.com/imagen.jpg" onchange="usarUrlImagen(this.value, 'evento')">
+                    </details>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="btnEventoSubmit" class="btn-primary flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> <span id="btnEventoSubmitText">Enviar Solicitud</span>
+                    </button>
+                    <button type="button" id="btnCancelEventoForm" class="btn-secondary flex items-center gap-2">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Events Loading -->
+        <div id="eventosLoading" class="flex justify-center py-12 hidden">
+            <div class="w-10 h-10 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="misEventosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- Events Empty -->
+        <div id="eventosEmpty" class="empty-state hidden">
+            <i class="fas fa-calendar-alt"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mb-1">Sin eventos</h3>
+            <p class="text-gray-500 text-sm mb-4">Aún no has creado ningún evento</p>
+            <button id="btnEmptyEvento" class="btn-primary inline-flex items-center gap-2 text-sm">
+                <i class="fas fa-plus"></i> Crear mi primer evento
+            </button>
+        </div>
+
+        <!-- ============ SEPARADOR ============ -->
+        <div class="border-t border-gray-200 my-10"></div>
+
+        <!-- ============ SECCION: MIS ACTIVIDADES ============ -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <div>
+                <h2 class="font-display text-2xl font-bold text-gray-900 mb-1">
+                    <i class="fas fa-hiking text-queplan-orange mr-2"></i>Actividades de mis Lugares
+                </h2>
+                <p class="text-gray-500 text-sm">Agrega lo que se puede hacer en cada ubicación</p>
+            </div>
+            <button id="btnNuevaActividad" class="btn-primary inline-flex items-center gap-2 text-sm self-start">
+                <i class="fas fa-plus"></i> Nueva Actividad
+            </button>
+        </div>
+
+        <!-- Activity Creation/Edit Form -->
+        <div id="actividadFormSection" class="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8 hidden animate-fade-in-up">
+            <h2 id="actividadFormTitle" class="font-display text-xl font-bold text-gray-900 mb-6">
+                <i class="fas fa-hiking text-queplan-orange mr-2"></i>Nueva Actividad
+            </h2>
+
+            <form id="actividadForm" class="space-y-5">
+                <!-- Ubicacion dropdown -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación *</label>
+                    <select id="selectActividadUbicacion" class="input-field w-full">
+                        <option value="">Selecciona una de tus ubicaciones</option>
+                    </select>
+                </div>
+
+                <!-- Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la actividad *</label>
+                    <input type="text" id="inputActividadNombre" class="input-field w-full" placeholder="Ej: Tour guiado, Nado libre, Cena romantica" required>
+                </div>
+
+                <!-- Descripcion -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+                    <textarea id="inputActividadDescripcion" class="input-field w-full" rows="3" placeholder="Describe la actividad..."></textarea>
+                </div>
+
+                <!-- Precio + Duracion -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Precio (MXN)</label>
+                        <input type="number" id="inputActividadPrecio" class="input-field w-full" min="0" step="50" placeholder="0">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Duración</label>
+                        <input type="text" id="inputActividadDuracion" class="input-field w-full" placeholder="Ej: 2 horas, 30 min">
+                    </div>
+                </div>
+
+                <!-- Horario -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Horario</label>
+                    <input type="text" id="inputActividadHorario" class="input-field w-full" placeholder="Ej: Lun-Vie 9:00-17:00">
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="btnActividadSubmit" class="btn-primary flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i> <span id="btnActividadSubmitText">Guardar Actividad</span>
+                    </button>
+                    <button type="button" id="btnCancelActividadForm" class="btn-secondary flex items-center gap-2">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Activities Loading -->
+        <div id="actividadesLoading" class="flex justify-center py-12 hidden">
+            <div class="w-10 h-10 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Activities Grid -->
+        <div id="misActividadesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- Activities Empty -->
+        <div id="actividadesEmpty" class="empty-state hidden">
+            <i class="fas fa-hiking"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mb-1">Sin actividades</h3>
+            <p class="text-gray-500 text-sm mb-4">Agrega actividades a tus ubicaciones para que los visitantes sepan que pueden hacer</p>
+            <button id="btnEmptyActividad" class="btn-primary inline-flex items-center gap-2 text-sm">
+                <i class="fas fa-plus"></i> Agregar mi primera actividad
+            </button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/mis-ubicaciones.js"></script>
+</body>
+</html>

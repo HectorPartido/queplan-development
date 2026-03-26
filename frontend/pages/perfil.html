@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar -->
+    <!-- Navbar (generado por navbar.js) -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <main class="pt-24 pb-12 px-4 md:px-8 max-w-2xl mx-auto page-content">
+        <h1 class="font-display text-3xl font-bold text-gray-900 mb-8">Mi Perfil</h1>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-2xl shadow-sm p-8 mb-6">
+            <div class="flex items-center gap-5 mb-8">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-queplan-orange to-queplan-gold flex items-center justify-center text-white font-bold text-2xl" data-usuario="iniciales">U</div>
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-900" data-usuario="nombre">Usuario</h2>
+                    <p class="text-gray-500 text-sm" id="userEmail">email@example.com</p>
+                    <span id="userRolBadge" class="inline-block mt-1 px-3 py-0.5 rounded-full text-xs font-semibold bg-queplan-cream text-queplan-orange"></span>
+                </div>
+            </div>
+
+            <!-- Edit Name -->
+            <form id="perfilForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre</label>
+                    <input type="text" class="input-field" id="editNombre" required>
+                </div>
+                <button type="submit" class="btn-primary flex items-center gap-2 text-sm" id="btnGuardarPerfil">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+            </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="bg-white rounded-2xl shadow-sm p-8">
+            <h3 class="font-display text-lg font-semibold text-gray-900 mb-4">Cambiar contraseña</h3>
+            <form id="passwordForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Contraseña actual</label>
+                    <input type="password" class="input-field" id="passwordActual" required minlength="6">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nueva contraseña</label>
+                    <input type="password" class="input-field" id="passwordNuevo" required minlength="6">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar nueva contraseña</label>
+                    <input type="password" class="input-field" id="passwordConfirmar" required minlength="6">
+                </div>
+                <button type="submit" class="btn-secondary flex items-center gap-2 text-sm" id="btnCambiarPassword">
+                    <i class="fas fa-key"></i> Cambiar contraseña
+                </button>
+            </form>
+        </div>
+
+        <!-- Logout -->
+        <div class="mt-6 text-center">
+            <button data-action="logout" class="text-sm text-red-500 hover:text-red-600 transition-colors">
+                <i class="fas fa-sign-out-alt mr-1"></i> Cerrar sesión
+            </button>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/perfil.js"></script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+/* ============================================================
+   QUEPLAN - Custom Styles
+   ============================================================ */
+
+/* ---- Animations ---- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out; }
+.animate-fade-in-down { animation: fadeInDown 0.3s ease-out; }
+.animate-slide-left { animation: slideInLeft 0.4s ease-out; }
+.animate-slide-right { animation: slideInRight 0.4s ease-out; }
+.animate-slide-up { animation: slideUp 0.4s ease-out; }
+.animate-pulse-soft { animation: pulse 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* Staggered animations */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+
+/* ---- Skeleton Loading ---- */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+/* ---- Custom Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ---- Panel Slide ---- */
+.panel-open { transform: translateX(0) !important; }
+@media (max-width: 767px) {
+    .panel-open { transform: translateY(0) !important; }
+}
+
+/* ---- Map Push ---- */
+.map-pushed { margin-left: 380px; }
+@media (max-width: 767px) {
+    .map-pushed { margin-left: 0; }
+}
+
+/* ---- Dropdown ---- */
+.dropdown-active {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+/* ---- Mobile Menu ---- */
+.mobile-menu-open {
+    display: flex !important;
+}
+
+/* ---- Leaflet Custom Markers ---- */
+.marker-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50% 50% 50% 0;
+    background: linear-gradient(135deg, #ffaa00, #ffd99d);
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(242, 107, 58, 0.4);
+    border: 2px solid #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.marker-icon:hover {
+    transform: rotate(-45deg) scale(1.15);
+    box-shadow: 0 5px 15px rgba(242, 107, 58, 0.6);
+}
+.marker-icon span {
+    transform: rotate(45deg);
+    font-size: 16px;
+}
+
+/* ---- Leaflet Popup ---- */
+.leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+    padding: 0 !important;
+    overflow: hidden;
+}
+.leaflet-popup-content {
+    margin: 0 !important;
+    min-width: 260px;
+}
+.leaflet-popup-tip {
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+}
+
+/* ---- Card Component ---- */
+.card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* ---- Mood Chip ---- */
+.mood-chip.active {
+    background: linear-gradient(135deg, #FFF3ED, #FFF9F5);
+    border-color: #F26B3A;
+    color: #E85D2D;
+}
+
+/* ---- Price Preset ---- */
+.price-preset.active {
+    background: linear-gradient(135deg, #F26B3A, #F5A623);
+    border-color: transparent;
+    color: white;
+}
+
+/* ---- Group Option ---- */
+.group-option.active {
+    background: linear-gradient(135deg, #FFF3ED, #FFF9F5);
+    border-color: #F26B3A;
+}
+.group-option.active i { color: #F26B3A; }
+.group-option.active span { color: #E85D2D; }
+
+/* ---- Glass Effect ---- */
+.glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* ---- Notification Badge Pulse ---- */
+.badge-pulse {
+    position: relative;
+}
+.badge-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: inherit;
+    animation: pulse 2s ease-in-out infinite;
+    opacity: 0.4;
+    z-index: -1;
+}
+
+/* ---- Star Rating Interactive ---- */
+.star-rating i {
+    cursor: pointer;
+    transition: color 0.15s, transform 0.15s;
+    font-size: 1.25rem;
+}
+.star-rating i:hover {
+    transform: scale(1.2);
+}
+
+/* ---- Empty State ---- */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+.empty-state i {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+/* ---- Gradient Text ---- */
+.text-gradient {
+    background: linear-gradient(135deg, #F26B3A, #F5A623);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+    background: linear-gradient(135deg, #F26B3A, #F5A623);
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.625rem 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(242, 107, 58, 0.3);
+}
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(242, 107, 58, 0.45);
+    transform: translateY(-2px);
+}
+.btn-primary:active {
+    transform: translateY(0);
+}
+.btn-secondary {
+    background: white;
+    color: #374151;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.625rem 1.5rem;
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+    border-color: #F26B3A;
+    color: #F26B3A;
+}
+
+/* ---- Form Inputs ---- */
+.input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    color: #1f2937;
+    transition: all 0.3s ease;
+    background: white;
+}
+.input-field:focus {
+    outline: none;
+    border-color: #F26B3A;
+    box-shadow: 0 0 0 3px rgba(242, 107, 58, 0.15);
+}
+.input-field::placeholder {
+    color: #9ca3af;
+}
+
+/* ---- Tab Navigation ---- */
+.tab-btn {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #6b7280;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+.tab-btn:hover { color: #F26B3A; }
+.tab-btn.active {
+    color: #F26B3A;
+    border-bottom-color: #F26B3A;
+}
+
+/* ---- Notification Item ---- */
+.notification-item {
+    transition: background-color 0.2s;
+}
+.notification-item:hover {
+    background-color: #f9fafb;
+}
+.notification-item.unread {
+    border-left: 3px solid #F26B3A;
+    background-color: #FFF9F5;
+}
+
+/* ---- Roulette ---- */
+@keyframes cardFlash {
+    0% { opacity: 0.7; transform: scale(0.97); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@keyframes resultBounce {
+    0% { transform: scale(0.9); opacity: 0; }
+    60% { transform: scale(1.03); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.ruleta-cycling { animation: cardFlash 0.08s ease-out; }
+.ruleta-result { animation: resultBounce 0.5s ease-out; }
+.spin-ready { animation: pulse 2s ease-in-out infinite; }
+
+/* ---- Page Transition ---- */
+.page-content {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+/* ---- Responsive Utilities ---- */
+@media (max-width: 767px) {
+    .leaflet-popup-content { min-width: 220px; }
+}

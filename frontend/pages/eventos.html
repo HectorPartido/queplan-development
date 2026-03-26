@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar -->
+    <!-- Navbar (generado por navbar.js) -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <!-- Content -->
+    <main class="pt-24 pb-12 px-4 md:px-8 max-w-6xl mx-auto page-content">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">Eventos en Cancún</h1>
+            <p class="text-gray-500">Descubre actividades y participa en eventos de conservación</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-1 mb-8 border-b border-gray-200">
+            <button class="tab-btn active" data-tab="todos">Todos</button>
+            <button class="tab-btn" data-tab="general">Generales</button>
+            <button class="tab-btn" data-tab="ods">
+                <i class="fas fa-leaf mr-1"></i> Llamado a la Ayuda
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div id="eventosLoading" class="flex justify-center py-12">
+            <div class="w-10 h-10 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="eventosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- Empty State -->
+        <div id="eventosEmpty" class="empty-state hidden">
+            <i class="fas fa-calendar-times"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mb-1">No hay eventos</h3>
+            <p class="text-gray-500 text-sm">No se encontraron eventos para este filtro</p>
+        </div>
+    </main>
+
+    <!-- Modal Detalle de Evento -->
+    <div id="modalEvento" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+        <div id="modalEventoContent" class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-95">
+            <!-- Header con imagen -->
+            <div class="relative h-48 md:h-56 overflow-hidden" id="modalEventoHero">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+                <button onclick="cerrarModalEvento()" class="absolute top-4 right-4 z-20 w-9 h-9 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-gray-600 hover:text-gray-900 hover:scale-110 transition-all shadow-lg cursor-pointer">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="absolute bottom-4 left-6 right-6 z-10">
+                    <div id="modalEventoBadge" class="mb-2"></div>
+                    <h2 id="modalEventoTitulo" class="font-display text-2xl md:text-3xl font-bold text-white"></h2>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 14rem)">
+                <!-- Info principal -->
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-5">
+                    <span class="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <i class="fas fa-calendar text-queplan-orange"></i>
+                        <span id="modalEventoFecha"></span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <i class="fas fa-clock text-queplan-orange"></i>
+                        <span id="modalEventoHora"></span>
+                    </span>
+                    <span id="modalEventoUbicacionWrap" class="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg hidden">
+                        <i class="fas fa-map-marker-alt text-queplan-orange"></i>
+                        <span id="modalEventoUbicacion"></span>
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-lg">
+                        <i class="fas fa-user text-queplan-orange"></i>
+                        <span id="modalEventoCreador"></span>
+                    </span>
+                </div>
+
+                <!-- Descripcion completa -->
+                <div class="mb-6">
+                    <h3 class="font-display text-lg font-semibold text-gray-900 mb-2">Descripción</h3>
+                    <p id="modalEventoDescripcion" class="text-gray-600 leading-relaxed whitespace-pre-line"></p>
+                </div>
+
+                <!-- Asistencia -->
+                <div class="bg-gray-50 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-2 text-sm text-gray-600" id="modalAsistenciaCount">
+                            <i class="fas fa-users text-queplan-orange text-lg"></i>
+                            <span class="font-semibold"></span>
+                        </span>
+                        <div id="modalAsistenciaBtn"></div>
+                    </div>
+                </div>
+
+                <!-- Reportar -->
+                <div id="modalEventoReportar" class="mt-4 text-center" data-auth="logueado" style="display:none">
+                    <button id="btnReportarEvento" class="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+                        <i class="fas fa-flag"></i> Reportar este evento
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/components/reportar-modal.js"></script>
+    <script src="/assets/js/pages/eventos.js"></script>
+</body>
+</html>

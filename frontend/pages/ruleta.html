@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        queplan: {
+                            orange: '#F26B3A',
+                            'orange-dark': '#E85D2D',
+                            'orange-light': '#FF7F50',
+                            coral: '#FF6347',
+                            gold: '#F5A623',
+                            yellow: '#FFD966',
+                            amber: '#FFBF00',
+                            cream: '#FFF9F5',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Playfair Display', 'Georgia', 'serif'],
+                        body: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <main class="pt-24 pb-12 px-4 md:px-8 max-w-3xl mx-auto page-content">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-queplan-orange to-queplan-gold rounded-full mb-4 shadow-lg">
+                <i class="fas fa-random text-white text-2xl"></i>
+            </div>
+            <h1 class="font-display text-3xl md:text-4xl font-bold text-gray-900 mb-2">¿A dónde vamos?</h1>
+            <p class="text-gray-500">Gira la ruleta y descubre tu próximo destino en Cancún</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm mb-8">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
+                <i class="fas fa-filter mr-1"></i> Filtros (opcional)
+            </h3>
+
+            <!-- Mood chips -->
+            <div class="mb-5">
+                <p class="text-sm font-medium text-gray-700 mb-2">Mood</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2" id="moodGrid">
+                    <!-- filled by JS -->
+                </div>
+            </div>
+
+            <!-- Price -->
+            <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Precio promedio por persona (MXN)</p>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="flex-1 relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">$</span>
+                        <input type="number" class="input-field pl-7" id="priceMin" placeholder="Mín" min="0" step="50">
+                    </div>
+                    <span class="text-gray-300">—</span>
+                    <div class="flex-1 relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">$</span>
+                        <input type="number" class="input-field pl-7" id="priceMax" placeholder="Max" min="0" step="50">
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="0" data-max="0">Gratis</button>
+                    <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="0" data-max="200">$0 - $200</button>
+                    <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="200" data-max="500">$200 - $500</button>
+                    <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="500" data-max="">$500+</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spin Button -->
+        <div class="text-center mb-8">
+            <button id="btnGirar" class="btn-primary text-lg px-10 py-4 spin-ready">
+                <i class="fas fa-random mr-2"></i> ¡Girar la Ruleta!
+            </button>
+        </div>
+
+        <!-- Roulette Animation Container -->
+        <div id="ruletaContainer" class="hidden mb-8">
+            <div id="ruletaCard" class="card overflow-hidden" style="min-height:200px">
+                <!-- Content swapped by JS during spin -->
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection" class="hidden">
+            <!-- Result Card -->
+            <div id="resultCard" class="card overflow-hidden mb-6 ruleta-result"></div>
+
+            <!-- Mini Map -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-6">
+                <div id="resultMap" class="h-64 w-full"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                <a id="btnDetalle" href="#" class="btn-primary text-center flex items-center justify-center gap-2">
+                    <i class="fas fa-info-circle"></i> Ver detalle
+                </a>
+                <a id="btnDirecciones" href="#" target="_blank" rel="noopener" class="btn-secondary text-center flex items-center justify-center gap-2">
+                    <i class="fas fa-directions"></i> Cómo llegar
+                </a>
+                <button id="btnGirarDeNuevo" class="btn-secondary flex items-center justify-center gap-2">
+                    <i class="fas fa-redo"></i> Girar de nuevo
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state hidden">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mt-2 mb-1">No hay lugares</h3>
+            <p class="text-gray-400 text-sm">Ajusta los filtros e intenta de nuevo</p>
+        </div>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/ruleta.js"></script>
+</body>
+</html>

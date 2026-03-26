@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo-completo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-gradient-to-br from-queplan-cream via-white to-orange-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md animate-fade-in-up">
+        <div class="text-center mb-8">
+            <a href="/" class="inline-block">
+                <img src="/assets/images/logo-completo.png" alt="¿Qué Plan?" class="h-20 mx-auto mb-4 hover:scale-105 transition-transform">
+            </a>
+            <h1 class="font-display text-3xl font-bold text-gray-900">Crear cuenta</h1>
+            <p class="text-gray-500 mt-1">Únete a la comunidad de exploradores</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 p-8">
+            <form id="registroForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Nombre completo</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" class="input-field pl-11" id="nombre" placeholder="Tu nombre" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Correo electrónico</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="email" class="input-field pl-11" id="email" placeholder="tu@email.com" required autocomplete="email">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Contraseña</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" class="input-field pl-11 pr-11" id="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirmar contraseña</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" class="input-field pl-11" id="confirmPassword" placeholder="Repite tu contraseña" required minlength="6">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de cuenta</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="group-option relative flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-queplan-orange/50 transition-all active" id="optUsuario">
+                            <input type="radio" name="rol" value="usuario" checked class="hidden">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                                <i class="fas fa-user text-blue-500 text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-semibold text-gray-800 block">Explorador</span>
+                                <span class="text-xs text-gray-400">Descubre lugares</span>
+                            </div>
+                        </label>
+                        <label class="group-option relative flex items-center gap-2 p-3 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-queplan-orange/50 transition-all" id="optVendedor">
+                            <input type="radio" name="rol" value="vendedor" class="hidden">
+                            <div class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center">
+                                <i class="fas fa-store text-queplan-orange text-sm"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-semibold text-gray-800 block">Vendedor</span>
+                                <span class="text-xs text-gray-400">Pública tu negocio</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-2 pt-1">
+                    <input type="checkbox" id="terminos" class="mt-1 accent-queplan-orange" required>
+                    <label for="terminos" class="text-sm text-gray-600">Acepto los términos y condiciones de uso</label>
+                </div>
+
+                <button type="submit" class="w-full btn-primary py-3 text-base flex items-center justify-center gap-2" id="btnRegistro">
+                    <i class="fas fa-user-plus"></i> Crear cuenta
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-500">
+                    ¿Ya tienes cuenta?
+                    <a href="/pages/login.html" class="font-semibold text-queplan-orange hover:text-queplan-orange-dark transition-colors">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mt-6">
+            <a href="/" class="text-sm text-gray-400 hover:text-queplan-orange transition-colors">
+                <i class="fas fa-arrow-left mr-1"></i> Volver al mapa
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/registro.js"></script>
+</body>
+</html>

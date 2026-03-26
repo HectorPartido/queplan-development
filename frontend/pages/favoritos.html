@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos | ¿Qué Plan?</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { queplan: { orange: '#F26B3A', 'orange-dark': '#E85D2D', gold: '#F5A623', cream: '#FFF9F5', coral: '#FF6347' } }, fontFamily: { display: ['Playfair Display', 'serif'], body: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen">
+
+    <!-- Navbar -->
+    <!-- Navbar (generado por navbar.js) -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <main class="pt-24 pb-12 px-4 md:px-8 max-w-5xl mx-auto page-content">
+        <h1 class="font-display text-3xl font-bold text-gray-900 mb-2">Mis Favoritos</h1>
+        <p class="text-gray-500 mb-8">Tus lugares guardados en Cancún</p>
+
+        <!-- Loading -->
+        <div id="favoritosLoading" class="flex justify-center py-12">
+            <div class="w-10 h-10 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Grid -->
+        <div id="favoritosGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <!-- Empty -->
+        <div id="favoritosEmpty" class="empty-state hidden">
+            <i class="fas fa-heart-broken"></i>
+            <h3 class="font-display text-xl font-semibold text-gray-700 mb-1">Sin favoritos</h3>
+            <p class="text-gray-500 text-sm mb-4">Aún no has guardado ningún lugar</p>
+            <a href="/" class="btn-primary inline-flex items-center gap-2 text-sm">
+                <i class="fas fa-map-marked-alt"></i> Explorar mapa
+            </a>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/favoritos.js"></script>
+</body>
+</html>

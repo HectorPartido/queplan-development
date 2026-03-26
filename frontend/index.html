@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="¿Qué Plan? - Descubre los mejores lugares y eventos en Cancún. Explora, disfruta y apoya el turismo sostenible.">
+    <meta name="theme-color" content="#F26B3A">
+    <title>¿Qué Plan? | Cancún</title>
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        queplan: {
+                            orange: '#F26B3A',
+                            'orange-dark': '#E85D2D',
+                            'orange-light': '#FF7F50',
+                            coral: '#FF6347',
+                            gold: '#F5A623',
+                            yellow: '#FFD966',
+                            amber: '#FFBF00',
+                            cream: '#FFF9F5',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Playfair Display', 'Georgia', 'serif'],
+                        body: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="font-body bg-queplan-cream min-h-screen overflow-x-hidden">
+
+    <!-- ========== NAVBAR (generado por navbar.js) ========== -->
+    <script src="/assets/js/components/navbar.js"></script>
+
+    <!-- ========== MAIN ========== -->
+    <main class="pt-16 h-screen flex relative">
+
+        <!-- Filters Panel -->
+        <aside class="fixed top-16 left-0 w-[380px] h-[calc(100vh-64px)] bg-white shadow-[4px_0_15px_rgba(0,0,0,0.08)] z-[1000] -translate-x-full transition-transform duration-300 ease-out flex flex-col overflow-hidden max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:h-[85vh] max-md:rounded-t-2xl max-md:translate-x-0 max-md:translate-y-full max-md:shadow-[0_-10px_30px_rgba(0,0,0,0.15)]" id="filtersPanel">
+            <div class="flex items-center justify-between p-5 border-b border-gray-100 relative">
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 bg-gray-300 rounded-full md:hidden"></div>
+                <h2 class="font-display text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-queplan-orange"></i> Filtros
+                </h2>
+                <button class="w-9 h-9 flex items-center justify-center text-gray-400 rounded-full hover:bg-gray-100 hover:text-gray-700 transition-colors" id="closePanel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                <!-- Search -->
+                <section>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Buscar</h3>
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" class="input-field pl-11" id="searchInput" placeholder="Restaurantes, playas, tours..." autocomplete="off">
+                    </div>
+                </section>
+
+                <!-- Moods -->
+                <section>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Mood</h3>
+                    <div class="grid grid-cols-2 gap-2" id="moodGrid">
+                        <!-- filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Price -->
+                <section>
+                    <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Precio por persona (MXN)</h3>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="flex-1 relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">$</span>
+                            <input type="number" class="input-field pl-7" id="priceMin" placeholder="Min" min="0" step="50">
+                        </div>
+                        <span class="text-gray-300">—</span>
+                        <div class="flex-1 relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium text-sm">$</span>
+                            <input type="number" class="input-field pl-7" id="priceMax" placeholder="Max" min="0" step="50">
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="0" data-max="200">$0 - $200</button>
+                        <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="200" data-max="500">$200 - $500</button>
+                        <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="500" data-max="1000">$500 - $1K</button>
+                        <button class="price-preset px-3 py-1 bg-gray-100 border-2 border-transparent rounded-full text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all" data-min="1000" data-max="">$1000+</button>
+                    </div>
+                </section>
+            </div>
+
+            <div class="p-4 border-t border-gray-100 flex gap-3">
+                <button class="flex-1 btn-secondary flex items-center justify-center gap-2 text-sm" id="btnClearFilters">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+                <button class="flex-1 btn-primary flex items-center justify-center gap-2 text-sm" id="btnApplyFilters">
+                    <i class="fas fa-search"></i> Aplicar
+                </button>
+            </div>
+        </aside>
+
+        <!-- Map -->
+        <div class="flex-1 h-[calc(100vh-64px)] relative transition-all duration-300" id="mapContainer">
+            <div id="map" class="w-full h-full"></div>
+
+            <!-- Loading overlay -->
+            <div class="absolute inset-0 bg-queplan-cream/80 flex flex-col items-center justify-center z-10 transition-opacity" id="mapLoading">
+                <div class="w-12 h-12 border-4 border-queplan-orange/30 border-t-queplan-orange rounded-full animate-spin mb-4"></div>
+                <p class="text-gray-500 font-medium">Cargando mapa...</p>
+            </div>
+        </div>
+
+        <!-- Panel Toggle - Desktop -->
+        <button class="fixed top-20 left-4 w-11 h-11 bg-white rounded-xl shadow-lg flex items-center justify-center text-gray-600 z-[1000] hover:bg-queplan-cream hover:text-queplan-orange hover:shadow-xl transition-all max-md:hidden" id="panelToggle">
+            <i class="fas fa-filter"></i>
+        </button>
+
+        <!-- Panel Toggle - Mobile -->
+        <button class="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 btn-primary rounded-xl shadow-xl flex items-center gap-2 z-[1000] md:hidden" id="panelToggleMobile">
+            <i class="fas fa-filter"></i> Filtros
+        </button>
+
+        <!-- ODS FAB -->
+        <a href="/pages/eventos.html?tipo=ods" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-full shadow-lg flex items-center justify-center text-white text-xl z-[1000] hover:scale-110 hover:shadow-xl hover:shadow-emerald-500/30 transition-all group max-md:bottom-24">
+            <i class="fas fa-hands-helping"></i>
+            <span class="absolute right-full mr-3 whitespace-nowrap px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none">
+                Llamado a la Ayuda
+            </span>
+        </a>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/pages/home.js"></script>
+</body>
+</html>
