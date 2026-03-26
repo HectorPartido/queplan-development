@@ -300,6 +300,13 @@ const actualizar = async (req, res) => {
             });
         }
         
+        // Determinar el valor de imagen_url:
+        // - null/undefined = no cambiar (COALESCE mantiene el valor actual)
+        // - '' = el usuario quiere eliminar la imagen
+        // - 'url...' = nueva imagen
+        const imagenFinal = imagen_url === '' ? null : (imagen_url ?? null);
+        const imagenQuery = imagen_url === '' ? 'imagen_url = NULL' : 'imagen_url = COALESCE(?, imagen_url)';
+
         // Actualizamos la ubicación
         await pool.execute(`
             UPDATE ubicacion SET
@@ -311,12 +318,14 @@ const actualizar = async (req, res) => {
                 precio_promedio = COALESCE(?, precio_promedio),
                 telefono = COALESCE(?, telefono),
                 horario = COALESCE(?, horario),
-                imagen_url = COALESCE(?, imagen_url)
+                ${imagenQuery}
             WHERE id = ?
-        `, [
-            nombre ?? null, descripcion ?? null, latitud ?? null, longitud ?? null, direccion ?? null,
-            precio_promedio ?? null, telefono ?? null, horario ?? null, imagen_url ?? null, id
-        ]);
+        `, imagen_url === ''
+            ? [nombre ?? null, descripcion ?? null, latitud ?? null, longitud ?? null, direccion ?? null,
+               precio_promedio ?? null, telefono ?? null, horario ?? null, id]
+            : [nombre ?? null, descripcion ?? null, latitud ?? null, longitud ?? null, direccion ?? null,
+               precio_promedio ?? null, telefono ?? null, horario ?? null, imagenFinal, id]
+        );
         
         // Si se proporcionaron moods, actualizamos las asociaciones
         if (moods) {
